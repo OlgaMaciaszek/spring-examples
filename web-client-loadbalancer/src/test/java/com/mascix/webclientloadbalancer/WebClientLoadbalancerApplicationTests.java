@@ -1,20 +1,22 @@
 package com.mascix.webclientloadbalancer;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
-import org.springframework.cloud.client.loadbalancer.reactive.RetryableLoadBalancerExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.reactive.function.client.WebClient;
+
 @SpringBootTest
 class WebClientLoadbalancerApplicationTests {
+
     @Autowired
+    @Qualifier("loadBalancedWebClientBuilder")
     WebClient.Builder webClientBuilder;
 
 //    @Autowired
@@ -35,7 +37,7 @@ class WebClientLoadbalancerApplicationTests {
     @Test
     void contextLoads() {
         lastSearchedIps.forEach(i -> {
-            String url = "lb://restCaller/get?test=" + i + "&source=test";
+            String url = "http://restCaller/get?test=" + i + "&source=test";
 
             String whois = webClientBuilder
 //                    .baseUrl("lb://restCaller")

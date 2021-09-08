@@ -1,6 +1,7 @@
 package com.mascix.webclientloadbalancer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -11,20 +12,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class RestCallerConfiguration {
 
+    @Autowired
+    @Qualifier("webClientBuilder")
+    WebClient.Builder webClientBuilder;
+
     @Bean
     @Primary
     ServiceInstanceListSupplier serviceInstanceListSupplier(ConfigurableApplicationContext ctx) {
         return ServiceInstanceListSupplier
                 .builder()
                 .withRetryAwareness()
-                .withHealthChecks()
+                .withHealthChecks(webClientBuilder.build())
                 .withBase(new RestCaller("restCaller"))
                 .build(ctx)
                 ;
     }
-
-    @Autowired
-    WebClient.Builder webClientBuilder;
 
 //    @Bean
 //    public ServiceInstanceListSupplier discoveryClientServiceInstanceListSupplier(ConfigurableApplicationContext context) {
